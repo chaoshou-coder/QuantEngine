@@ -1,0 +1,38 @@
+data_root: "./data"
+results_root: "./results"
+reports_root: "./reports"
+
+runtime:
+  backend: "auto"
+  use_gpu: true
+  initial_cash: 1000000
+  contract_multiplier: 1.0
+  risk_free_rate: 0.02
+  preset_periods: "forex_intraday_1m"
+  periods_per_year: 358800
+  timezone: "Asia/Shanghai"
+  default_interval: "1m"
+
+slippage:
+  model: "percent"
+  value: 0.0001
+  impact: 1.0
+
+commission:
+  model: "percent"
+  value: 0.0002
+  tiers: []
+
+optimize:
+  metric: "sharpe"
+  maximize: true
+  n_trials: 200
+  max_workers: null
+  random_seed: 42
+  batch_size: 128
+
+visualization:
+  theme: "plotly_dark"
+  width: 1280
+  height: 720
+  include_trade_table: true
