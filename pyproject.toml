@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "quantengine"
 version = "0.2.0"
-description = "QuantEngine: GPU-first vectorized backtesting engine"
+description = "QuantEngine: Vectorized backtesting engine with optional GPU acceleration"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }

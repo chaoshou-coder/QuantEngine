@@ -4,7 +4,7 @@
 ![CLI](https://img.shields.io/badge/cli-quantengine-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-QuantEngine 是一个面向 1 分钟线回测的 GPU 优先量化引擎，提供 CLI 与 Python API 两套入口，支持多策略、多参数搜索、风控扩展、成本多情景、审计包与策略 DSL。
+QuantEngine 是一个向量化量化回测引擎，支持多周期（分钟/小时/日线）OHLCV 数据与可选 GPU 加速，提供 CLI 与 Python API 两套入口，支持多策略、多参数搜索、风控扩展、成本多情景、审计包与策略 DSL。
 
 ## 核心价值
 

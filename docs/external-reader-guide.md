@@ -39,7 +39,7 @@
   - Numba JIT：关键指标与仿真路径加速
   - 报告输出：`JSON` + `HTML`（plotly/matplotlib）
   - 依赖检查：`quantengine check-deps` 安装前可选
-  - 数据接入：CSV/Parquet，一分钟线优先
+  - 数据接入：CSV/Parquet，支持多周期（分钟/小时/日线）
   - 连续合约工具、滑点/手续费/涨跌停/保证金相关模型
 - 不承担的能力
   - 本版本无图形化策略编辑器

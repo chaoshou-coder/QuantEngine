@@ -20,7 +20,7 @@
 
 #### Sprint 2：审计 + 报告
 
-- 审计包：`quantengine.audit` 模块，`AuditBundle` ZIP 结构（manifest、trade_log、equity_curve、risk_events 等）
+- 审计包：`quantengine.audit` 模块，`AuditBundle` ZIP 结构（config、trades、equity_curve、risk_events 等）
 - round-trip 校验：`verify_audit_bundle`、`replay_from_bundle` 支持 bit-identical 复现
 - 报告系统：8 区块（绩效/风险/交易/权益/敏感度等）、BH 校正、参数敏感度、可选 PDF
 
@@ -40,7 +40,7 @@
 
 - 新增 `docs/features/` 功能文档（风控、成本情景、审计包、报告、DSL、GPU）
 - 更新 `docs/architecture/overview.md` 涵盖 audit、contracts、DSL、风控、成本、GPU
-- 更新 `docs/testing/acceptance.md` 反映 169+ 测试
+- 更新 `docs/testing/acceptance.md` 反映 20 核心测试模块、130+ 用例
 
 ---
 
