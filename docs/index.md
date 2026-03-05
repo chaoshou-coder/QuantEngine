@@ -33,7 +33,7 @@
   - `quickstart.md`
   - `api/cli.md`
 - 架构与设计
-  - `architecture/overview.md`
+  - `architecture/overview.md`（含 audit、contracts、DSL、风控、成本、GPU）
   - `architecture/module-map.md`
   - `api/python-api.md`
   - `strategy/development-guide.md`

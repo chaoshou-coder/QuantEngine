@@ -23,7 +23,6 @@ data/
 results/
 reports/
 memory/
-docs/sprint1_coordination.md
 *.parquet
 *.csv
 *.tmp_*.py

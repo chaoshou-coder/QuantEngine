@@ -14,10 +14,29 @@ QuantEngine 是一个面向 1 分钟线回测的 GPU 优先量化引擎，提供
 
 ## 快速上手
 
-```bash
-pip install -e .             # 开发环境
-pip install -e .[engine]     # 含 GPU/可视化/优化器可选依赖
+### 安装前检查（可选）
 
+```bash
+quantengine check-deps           # 检查核心依赖
+quantengine check-deps --engine  # 同时检查 GPU/优化器依赖
+```
+
+### 一键安装
+
+```bash
+# 方式一：Makefile（推荐）
+make install          # 完整安装（含 engine）
+make install-minimal  # 仅核心依赖
+make install-dev      # 含 ruff、pytest 开发依赖
+
+# 方式二：pip 直接安装
+pip install -e .             # 仅核心
+pip install -e .[engine]     # 含 GPU/可视化/优化器可选依赖
+pip install -r requirements.txt        # 从生成文件安装核心
+pip install -r requirements-engine.txt # 安装全部（含 engine）
+```
+
+```bash
 quantengine --help
 ```
 
