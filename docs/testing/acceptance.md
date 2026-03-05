@@ -50,7 +50,7 @@ pytest tests/ -m "not slow" -q
 可以在开发分支合并前执行一次简化回归：
 
 ```bash
-pytest tests/ -m "not slow" -k "not test_cli_backtest_smoke" -q
+pytest tests/ -m "not slow" -q
 ```
 
 以及 CLI 冒烟命令：

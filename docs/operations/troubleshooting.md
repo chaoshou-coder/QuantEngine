@@ -1,4 +1,4 @@
-﻿# 运维排障手册
+# 运维排障手册
 
 本页覆盖常见故障、排查步骤与建议修复方案。
 
@@ -42,6 +42,11 @@
   - 检查 `quantengine report` 输出中 `trades` 数量和 `Trade Metrics`
 
 ## 3. 运行与兼容相关
+
+### 现象：依赖缺失或版本不符
+
+- 处理：运行 `quantengine check-deps` 或 `quantengine check-deps --engine` 检查核心/可选依赖
+- 输出会列出缺失包、版本不符项
 
 ### 现象：GPU 未启用
 

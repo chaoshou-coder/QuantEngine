@@ -38,6 +38,7 @@
   - 数据缓存：`.quantengine_cache` 命中加速
   - Numba JIT：关键指标与仿真路径加速
   - 报告输出：`JSON` + `HTML`（plotly/matplotlib）
+  - 依赖检查：`quantengine check-deps` 安装前可选
   - 数据接入：CSV/Parquet，一分钟线优先
   - 连续合约工具、滑点/手续费/涨跌停/保证金相关模型
 - 不承担的能力
@@ -47,6 +48,7 @@
 ## 一步到位的验证清单
 
 ```bash
+quantengine check-deps           # 可选：依赖检查
 quantengine list-strategies
 quantengine --config quantengine.example.yaml backtest --help
 quantengine --config quantengine.example.yaml optimize --help

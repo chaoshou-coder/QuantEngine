@@ -18,6 +18,7 @@ QuantEngine 是一个面向 1 分钟线回测的 GPU 优先量化引擎，提供
 pip install -e .             # 仅核心依赖
 pip install -e .[engine]     # 含 GPU/可视化/优化器可选依赖
 
+quantengine check-deps       # 可选：检查依赖完整性
 quantengine --help
 ```
 
@@ -44,7 +45,7 @@ quantengine --config quantengine.example.yaml backtest \
 |------|------|
 | 风控引擎 | `TradingRules` 7 字段：单笔风险、日内/周亏损、回撤阈值、最大持仓、加仓次数；Numba 集成；`risk_events` 输出 |
 | 成本多情景 | `CostScenario` + `run_cost_scenarios`：低/中/高三档滑点与手续费，批量评估稳健性 |
-| 审计包 | ZIP 结构含 `manifest.json`、`trade_log.json`、`equity_curve.json`；round-trip 校验；`replay` 复现 |
+| 审计包 | ZIP 结构含 `config.json`、`trades.csv`、`equity_curve.csv`、`risk_events.csv` 等；round-trip 校验；`replay` 复现 |
 | 报告系统 | 8 区块（绩效/风险/交易/权益/敏感度等）；BH 校正；参数敏感度；可选 PDF |
 | 策略 DSL | YAML 格式；`framework`/`risk_mode`；V4 策略全覆盖 |
 | GPU 加速 | `batch_sim` + `evaluate_signal_tensor`；CPU 信号 + GPU 仿真混合；无 CUDA 时自动回退 |
@@ -55,6 +56,7 @@ quantengine --config quantengine.example.yaml backtest \
 src/quantengine/
 ├── audit/           # 审计包生成、校验、复现
 ├── contracts/       # 合约规格抽象（multiplier、min_tick、trading_sessions）
+├── data/            # 数据加载、缓存、GPU 后端、预处理
 ├── engine/          # 回测引擎、风控、成本情景、组合仿真
 ├── indicators/      # 技术指标（Numba/CuPy 感知）
 ├── metrics/         # 绩效、风险、批量指标
@@ -65,7 +67,7 @@ src/quantengine/
 
 ## 测试与质量
 
-- **169+ 测试用例**：覆盖引擎、审计、合约、DSL、风控、成本情景、指标、策略
+- **20 个核心测试模块、130+ 用例**：覆盖引擎、审计、合约、DSL、风控、成本情景、指标、策略、CLI、check-deps
 - **ruff**：格式化与 lint
 - **ADR**：架构决策记录见 `docs/decisions/`
 

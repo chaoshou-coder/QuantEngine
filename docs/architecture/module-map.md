@@ -13,7 +13,7 @@
 ## CLI 入口
 
 - `src/quantengine/cli.py`
-  - Click 命令组与 `list-strategies/backtest/optimize/walk-forward/report` 实现
+  - Click 命令组与 `check-deps/list-strategies/backtest/optimize/walk-forward/report` 实现
   - 输出 JSON / HTML
 
 ## 数据层
