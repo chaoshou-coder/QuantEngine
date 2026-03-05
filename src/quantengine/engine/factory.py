@@ -32,4 +32,3 @@ def build_engine(config: QuantEngineConfig) -> BacktestEngine:
         risk_free_rate=config.runtime.risk_free_rate,
         periods_per_year=config.runtime.periods_per_year,
     )
-

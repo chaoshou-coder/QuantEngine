@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from quantengine.interface.api import QuantEngineAPI
-from importlib.metadata import PackageNotFoundError
-from importlib.metadata import version
+from importlib.metadata import PackageNotFoundError, version
 
-__all__ = ["__version__"]
-__all__.append("QuantEngineAPI")
+from quantengine.interface.api import QuantEngineAPI
+from quantengine.logging_config import get_logger
+
+__all__ = ["__version__", "QuantEngineAPI", "get_logger"]
 
 try:
     __version__ = version("quantengine")

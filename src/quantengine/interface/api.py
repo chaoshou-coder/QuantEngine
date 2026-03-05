@@ -71,7 +71,10 @@ class QuantEngineAPI:
         )
         data = loader.load(path=data_path, symbols=symbols)
         engine = self._build_engine()
-        strategy_factory = lambda: get_strategy(strategy_name)
+
+        def strategy_factory():
+            return get_strategy(strategy_name)
+
         metric_name = metric or self.config.optimize.metric
         maximize_metric = self.config.optimize.maximize if maximize is None else maximize
         trials = n_trials or self.config.optimize.n_trials
@@ -149,7 +152,10 @@ class QuantEngineAPI:
         )
         data = loader.load(path=data_path, symbols=symbols)
         engine = self._build_engine()
-        strategy_factory = lambda: get_strategy(strategy_name)
+
+        def strategy_factory():
+            return get_strategy(strategy_name)
+
         metric_name = metric or self.config.optimize.metric
         maximize_metric = self.config.optimize.maximize if maximize is None else maximize
         trials = n_trials or self.config.optimize.n_trials

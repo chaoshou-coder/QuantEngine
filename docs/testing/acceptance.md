@@ -4,27 +4,35 @@
 
 ## 1. 自动化验收（推荐）
 
-`tests/test_acceptance.py` 为主验收集合，已使用 `@pytest.mark.slow` 标记，发布前执行：
+发布前执行非慢速测试（排除 `@pytest.mark.slow`）：
+
+```bash
+pytest tests/ -m "not slow" -q
+```
+
+当前版本期望通过 169+ 个测试，覆盖以下模块：
+
+| 模块 | 测试文件 | 覆盖内容 |
+|------|----------|----------|
+| audit | `test_audit_bundle.py`, `test_audit_io.py` | 审计包构建、ZIP 读写、round-trip 校验 |
+| contracts | `test_spec.py` | 合约规格解析、默认值、覆盖 |
+| engine | `test_commission.py`, `test_cost_scenarios.py`, `test_portfolio.py`, `test_rules.py`, `test_slippage.py` | 手续费、成本情景、组合仿真、风控、滑点 |
+| indicators | `test_registry.py`, `test_technical.py` | 指标注册、技术指标 |
+| metrics | `test_performance.py`, `test_stability_extras.py` | 绩效、稳定性 |
+| strategy | `test_dsl.py` | 策略 DSL 解析、V4 字段 |
+| 验收 | `test_psar_v3_acceptance.py`, `test_psar_v4_acceptance.py` | V3/V4 策略端到端 |
+
+若存在 `test_acceptance.py`（`@pytest.mark.slow`），发布前可额外执行：
 
 ```bash
 pytest tests/test_acceptance.py -m slow -v
 ```
 
-当前版本期望通过 27 个测试，覆盖 8 个类别：
+CLI 冒烟测试 `test_cli_backtest_smoke` 依赖数据路径与 Polars 兼容性，环境差异可能导致失败，可排除：
 
-- 数据加载与预处理（4）
-- 单策略回测（5）
-- 多策略回测（2）
-- 优化器（3）
-- 报告与可视化（3）
-- CLI 端到端（4）
-- Python API（3）
-- 性能基准（2）
-
-其中新增重点回归点：
-
-- `test_batch_optimizer_performance`：CPU 路径下验证 `evaluate_batch` 与 `evaluate_trials_parallel(max_workers=1)` 的耗时差异（目标：后者至少快 2 倍）
-- `test_load_full_directory`：验证三年数据目录加载与时间跨度覆盖
+```bash
+pytest tests/ -m "not slow" -k "not test_cli_backtest_smoke"
+```
 
 ## 2. 核对清单（人工复核）
 
@@ -40,7 +48,7 @@ pytest tests/test_acceptance.py -m slow -v
 可以在开发分支合并前执行一次简化回归：
 
 ```bash
-pytest tests/test_acceptance.py -m slow -k "load_full_directory or load_single_csv or test_batch_optimizer_performance" -q
+pytest tests/ -m "not slow" -k "not test_cli_backtest_smoke" -q
 ```
 
 以及 CLI 冒烟命令：

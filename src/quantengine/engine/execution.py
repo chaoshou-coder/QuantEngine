@@ -6,7 +6,6 @@ from typing import Literal
 from .rules import TradingRules
 from .slippage import SlippageModel
 
-
 OrderType = Literal["market", "limit"]
 
 

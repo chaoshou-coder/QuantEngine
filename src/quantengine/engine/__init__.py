@@ -6,8 +6,9 @@ from .commission import (
     TieredCommission,
     build_commission,
 )
-from .portfolio import PortfolioResult, simulate_portfolio
 from .execution import Fill, Order, execute_limit_order, execute_market_order
+from .factory import build_engine
+from .portfolio import PortfolioResult, simulate_portfolio
 from .rules import TradingRules
 from .slippage import (
     FixedSlippage,
@@ -16,7 +17,6 @@ from .slippage import (
     VolumeSlippage,
     build_slippage,
 )
-from .factory import build_engine
 
 __all__ = [
     "BacktestEngine",

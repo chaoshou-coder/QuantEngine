@@ -1,4 +1,4 @@
-﻿# QuantEngine 文档中心
+# QuantEngine 文档中心
 
 本目录承载 QuantEngine 的文档集合，覆盖策略研发、引擎研发、运维、分析与对外使用者。
 
@@ -19,7 +19,6 @@
   - 排障：`operations/troubleshooting.md`
   - 版本验收：`testing/acceptance.md`
 - 数据与分析
-  - 数据规范：`data/data-spec.md`
   - 指标和报告解读：结合 `api/python-api.md` 和 `quickstart.md` 的输出示例
   - Walk-Forward 结果解读：`optimization/optimizer-guide.md`
 - 外部读者/评审
@@ -38,9 +37,15 @@
   - `architecture/module-map.md`
   - `api/python-api.md`
   - `strategy/development-guide.md`
+- 功能说明（Sprint 0-3）
+  - `features/risk-management.md` — 风控引擎
+  - `features/cost-scenarios.md` — 成本多情景
+  - `features/audit-bundle.md` — 审计包
+  - `features/report-system.md` — 报告系统
+  - `features/strategy-dsl.md` — 策略 DSL
+  - `features/gpu-acceleration.md` — GPU 加速
 - 外部阅读者精简版：`external-reader-guide.md`
-- 数据与性能
-  - `data/data-spec.md`
+- 优化与性能
   - `optimization/optimizer-guide.md`
   - `optimization/gpu-setup.md`
 - 运维与质量

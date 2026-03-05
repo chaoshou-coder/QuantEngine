@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any
-import logging
 
 from quantengine.engine.backtest import BacktestReport
 
@@ -34,10 +34,7 @@ class OptimizationResult:
             "maximize": self.maximize,
             "best_params": self.best_params,
             "best_score": self.best_score,
-            "trials": [
-                {"params": item.params, "score": item.score}
-                for item in self.trials
-            ],
+            "trials": [{"params": item.params, "score": item.score} for item in self.trials],
         }
 
 

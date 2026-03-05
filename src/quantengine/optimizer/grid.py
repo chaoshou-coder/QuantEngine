@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable
+from collections.abc import Callable
+
 from rich.progress import BarColumn, Progress, TextColumn, TimeElapsedColumn, TimeRemainingColumn
 
-from quantengine.engine.backtest import BacktestEngine
 from quantengine.data.loader import DataBundle
+from quantengine.engine.backtest import BacktestEngine
 from quantengine.strategy.base import BaseStrategy, cartesian_from_spaces
 
 from .base import OptimizationResult, Optimizer, TrialResult
@@ -103,5 +104,8 @@ class GridSearchOptimizer(Optimizer):
 def _pick_best(trials: list[TrialResult], maximize: bool) -> TrialResult:
     if not trials:
         raise ValueError("trials 为空")
-    key_fn = lambda item: item.score
+
+    def key_fn(item):
+        return item.score
+
     return max(trials, key=key_fn) if maximize else min(trials, key=key_fn)

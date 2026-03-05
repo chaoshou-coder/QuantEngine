@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
-from typing import Any, Callable
+from typing import Any
+
 from rich.progress import BarColumn, Progress, TextColumn, TimeElapsedColumn, TimeRemainingColumn
 
 from quantengine.data.loader import DataBundle
-from quantengine.engine.backtest import BacktestReport, BacktestEngine
+from quantengine.engine.backtest import BacktestEngine, BacktestReport
 from quantengine.optimizer.bayesian import BayesianOptimizer
 from quantengine.optimizer.genetic import GeneticOptimizer
 from quantengine.optimizer.grid import GridSearchOptimizer
@@ -271,4 +273,3 @@ class WalkForwardAnalyzer:
                 continue
             values.append(float(oos_value) / float(is_value))
         return _mean(values)
-

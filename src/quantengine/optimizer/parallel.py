@@ -1,21 +1,23 @@
 from __future__ import annotations
 
+import logging
+import os
+import pickle
+from collections.abc import Callable
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
-import os
-from typing import Any, Callable, cast
-import logging
-import pickle
+from typing import Any, cast
 
 import numpy as np
 
+from quantengine.data.gpu_backend import get_backend_info
+from quantengine.data.loader import DataBundle
 from quantengine.engine.backtest import BacktestEngine
 from quantengine.engine.portfolio import simulate_portfolio, simulate_portfolio_batch
-from quantengine.metrics.performance import calculate_performance_metrics
+from quantengine.metrics.batch import batch_score
+from quantengine.metrics.performance import calculate_performance_metrics, market_returns_from_close
 from quantengine.metrics.risk import calculate_risk_metrics
 from quantengine.metrics.trade_analysis import calculate_trade_metrics
-from quantengine.metrics.batch import batch_score
-from quantengine.data.loader import DataBundle
 from quantengine.strategy.base import BaseStrategy
 
 from .base import TrialResult, score_from_report
@@ -26,6 +28,55 @@ try:
     import cupy as cp  # type: ignore
 except Exception:  # pragma: no cover
     cp = None
+
+
+def _require_cupy() -> Any:
+    if cp is None:
+        raise RuntimeError("CuPy required for Sprint 0 Track B GPU batch path")
+    return cp
+
+
+def _data_to_gpu(data: DataBundle) -> DataBundle:
+    cp_module = _require_cupy()
+    backend = get_backend_info(requested="gpu", use_gpu=True)
+    if backend.active != "gpu":
+        raise RuntimeError("GPU 请求失败：未检测到可用 CUDA 设备")
+    if data.backend.active == "gpu":
+        return data
+    return DataBundle(
+        symbols=list(data.symbols),
+        timestamps=data.timestamps,
+        open=cp_module.asarray(data.open),
+        high=cp_module.asarray(data.high),
+        low=cp_module.asarray(data.low),
+        close=cp_module.asarray(data.close),
+        volume=cp_module.asarray(data.volume),
+        backend=backend,
+    )
+
+
+def _signals_to_tensor(signals: list[Any] | tuple[Any, ...], dtype: Any = float):
+    cp_module = _require_cupy()
+    if not signals:
+        return cp_module.empty((0, 0, 0), dtype=dtype)
+    signal_arrays = [cp_module.asarray(signal, dtype=dtype) for signal in signals]
+    first = signal_arrays[0]
+    if first.ndim != 2:
+        raise ValueError(f"signal shape must be 2D, got {first.shape}")
+    for idx, signal in enumerate(signal_arrays):
+        if signal.ndim != 2:
+            raise ValueError(f"signal[{idx}] shape must be 2D, got {signal.shape}")
+    return cp_module.stack(signal_arrays, axis=2)
+
+
+def cleanup_gpu_memory() -> None:
+    if cp is None:
+        return
+    if hasattr(cp, "get_default_memory_pool"):
+        cp.get_default_memory_pool().free_all_blocks()
+    pinned = getattr(cp, "get_default_pinned_memory_pool", None)
+    if callable(pinned):
+        pinned().free_all_blocks()
 
 
 @dataclass
@@ -70,6 +121,7 @@ def _evaluate_signal_combo_worker(
         equity_curve=portfolio.equity_curve,
         risk_free_rate=engine.risk_free_rate,
         periods_per_year=engine.periods_per_year,
+        market_returns=market_returns_from_close(data.close),
     )
     risk = calculate_risk_metrics(
         returns=portfolio.returns,
@@ -113,10 +165,10 @@ def evaluate_batch(
         metric=metric,
         risk_free_rate=engine.risk_free_rate,
         periods_per_year=engine.periods_per_year,
+        market_returns=market_returns_from_close(data.close),
     )
     return [
-        TrialResult(params=params_list[idx], score=float(scores[idx]), report=None)
-        for idx in range(len(params_list))
+        TrialResult(params=params_list[idx], score=float(scores[idx]), report=None) for idx in range(len(params_list))
     ]
 
 

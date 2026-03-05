@@ -56,11 +56,44 @@ def _vector_annualized_return(equity: np.ndarray, periods_per_year: int) -> np.n
     years = max((n_bars - 1) / periods_per_year, 1e-9)
     return to_numpy(
         xp.where(
-        first > 0.0,
-        xp.power(last / xp.where(first > 0.0, first, 1.0), 1.0 / years) - 1.0,
-        0.0,
-    )
+            first > 0.0,
+            xp.power(last / xp.where(first > 0.0, first, 1.0), 1.0 / years) - 1.0,
+            0.0,
+        )
     ).astype(float)
+
+
+def _vector_win_rate(returns: np.ndarray) -> np.ndarray:
+    xp = xp_from_array(returns)
+    if returns.shape[0] <= 1:
+        return np.zeros(returns.shape[1], dtype=float)
+    series = returns[1:]  # skip initial zero-return bar
+    wins = xp.sum(series > 0.0, axis=0)
+    losses = xp.sum(series < 0.0, axis=0)
+    total = wins + losses
+    out = xp.where(total > 0, wins / xp.where(total > 0, total, 1.0), 0.0)
+    return to_numpy(out).astype(float)
+
+
+def _vector_beta(returns: np.ndarray, market_returns: np.ndarray | None) -> np.ndarray:
+    if market_returns is None:
+        return np.zeros(returns.shape[1], dtype=float)
+
+    xp = xp_from_array(returns)
+    mkt = xp.asarray(market_returns, dtype=float).reshape(-1)
+    if mkt.shape[0] != returns.shape[0]:
+        n = min(int(mkt.shape[0]), int(returns.shape[0]))
+        if n <= 1:
+            return np.zeros(returns.shape[1], dtype=float)
+        mkt = mkt[:n]
+        returns = returns[:n]
+
+    mkt_mean = xp.mean(mkt)
+    ret_mean = xp.mean(returns, axis=0)
+    cov = xp.mean((returns - ret_mean[None, :]) * (mkt[:, None] - mkt_mean), axis=0)
+    var = xp.var(mkt)
+    out = xp.where(var > 1e-12, cov / var, 0.0)
+    return to_numpy(out).astype(float)
 
 
 def batch_score(
@@ -69,11 +102,10 @@ def batch_score(
     metric: str,
     risk_free_rate: float,
     periods_per_year: int,
+    market_returns: np.ndarray | None = None,
 ) -> np.ndarray:
     if returns_2d.shape != equity_2d.shape:
-        raise ValueError(
-            f"returns/equity 形状不一致: returns={returns_2d.shape}, equity={equity_2d.shape}"
-        )
+        raise ValueError(f"returns/equity 形状不一致: returns={returns_2d.shape}, equity={equity_2d.shape}")
 
     equity = _ensure_2d(equity_2d)
     returns = _ensure_2d(returns_2d)
@@ -88,7 +120,11 @@ def batch_score(
         return _vector_sortino(returns, risk_free_rate=risk_free_rate, periods_per_year=periods_per_year)
     if metric_key == "max_drawdown":
         xp = xp_from_array(equity)
-        running_max = xp.maximum.accumulate(equity, axis=0)
+        try:
+            running_max = xp.maximum.accumulate(equity, axis=0)
+        except NotImplementedError:
+            eq_np = np.asarray(to_numpy(equity), dtype=np.float64)
+            running_max = xp.asarray(np.maximum.accumulate(eq_np, axis=0))
         drawdown = (equity - running_max) / xp.maximum(running_max, 1e-12)
         return to_numpy(xp.min(drawdown, axis=0)).astype(float)
     if metric_key == "total_return":
@@ -105,9 +141,20 @@ def batch_score(
     if metric_key == "annualized_return":
         return _vector_annualized_return(equity, periods_per_year)
     if metric_key == "calmar":
-        max_dd = batch_score(equity_2d=equity, returns_2d=returns, metric="max_drawdown", risk_free_rate=risk_free_rate, periods_per_year=periods_per_year)
+        max_dd = batch_score(
+            equity_2d=equity,
+            returns_2d=returns,
+            metric="max_drawdown",
+            risk_free_rate=risk_free_rate,
+            periods_per_year=periods_per_year,
+            market_returns=market_returns,
+        )
         ann = _vector_annualized_return(equity, periods_per_year)
         return np.where(np.abs(max_dd) > 1e-12, ann / np.abs(max_dd), 0.0)
+    if metric_key == "win_rate":
+        return _vector_win_rate(returns)
+    if metric_key == "beta":
+        return _vector_beta(returns, market_returns=market_returns)
 
     # 回退：保持兼容性，逐列调用现有单条计算逻辑
     scores = np.zeros(n_combo, dtype=float)
@@ -117,6 +164,7 @@ def batch_score(
             equity_curve=to_numpy(equity[:, idx]),
             risk_free_rate=risk_free_rate,
             periods_per_year=periods_per_year,
+            market_returns=market_returns,
         )
         if metric_key in perf:
             scores[idx] = float(perf[metric_key])

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Callable
 import logging
+from collections.abc import Callable
+from typing import Any
+
 from rich.progress import BarColumn, Progress, TextColumn, TimeElapsedColumn, TimeRemainingColumn
 
-from quantengine.engine.backtest import BacktestEngine
 from quantengine.data.loader import DataBundle
+from quantengine.engine.backtest import BacktestEngine
 from quantengine.strategy.base import BaseStrategy, ParameterSpace
 
 from .base import OptimizationResult, Optimizer, TrialResult, score_from_report

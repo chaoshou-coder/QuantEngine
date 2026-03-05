@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import random
 import logging
-from typing import Callable
+import random
+from collections.abc import Callable
+
 from rich.progress import BarColumn, Progress, TextColumn, TimeElapsedColumn, TimeRemainingColumn
 
-from quantengine.engine.backtest import BacktestEngine
 from quantengine.data.loader import DataBundle
+from quantengine.engine.backtest import BacktestEngine
 from quantengine.strategy.base import BaseStrategy
 
 from .base import OptimizationResult, Optimizer, TrialResult
@@ -14,6 +15,7 @@ from .grid import _pick_best
 from .parallel import build_signal_tensor, evaluate_batch, evaluate_signal_tensor
 
 logger = logging.getLogger(__name__)
+
 
 class RandomSearchOptimizer(Optimizer):
     method = "random"

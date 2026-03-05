@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any
 
-import numpy as np
 from quantengine.data.gpu_backend import xp_from_array
 
 

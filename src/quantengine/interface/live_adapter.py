@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Literal
 
-
 OrderSide = Literal["BUY", "SELL"]
 OrderKind = Literal["MARKET", "LIMIT"]
 

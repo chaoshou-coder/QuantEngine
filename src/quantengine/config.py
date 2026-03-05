@@ -56,7 +56,7 @@ class RuntimeConfig(BaseModel):
 
     @model_validator(mode="after")
     @classmethod
-    def _apply_period_preset(cls, values: "RuntimeConfig") -> "RuntimeConfig":
+    def _apply_period_preset(cls, values: RuntimeConfig) -> RuntimeConfig:
         if values.preset_periods is not None:
             preset_value = PeriodsPerYear.presets[values.preset_periods]
             values.periods_per_year = preset_value

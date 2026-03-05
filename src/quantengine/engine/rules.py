@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-import numpy as np
 from quantengine.data.gpu_backend import xp_from_array
 
 
@@ -12,6 +11,13 @@ class TradingRules:
     limit_up_ratio: float | None = None
     limit_down_ratio: float | None = None
     margin_ratio: float = 0.1
+    max_risk_per_trade: float = 0.0
+    max_daily_loss: float = 0.0
+    max_weekly_loss: float = 0.0
+    max_drawdown_limit: float = 0.0
+    max_drawdown_action: str = "stop"
+    max_position: float = 0.0
+    max_addon_count: int = 0
 
     def apply_price_limit(self, price: float, prev_close: float) -> float:
         out = price

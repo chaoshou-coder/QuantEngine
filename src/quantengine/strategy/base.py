@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
 import itertools
 import random
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import Any, Literal
+
 import numpy as np
 
 from quantengine.data import DataBundle
 from quantengine.strategy.signal import SignalArray
-
 
 ParameterType = Literal["int", "float", "choice"]
 
@@ -66,6 +66,5 @@ class BaseStrategy(ABC):
     def generate_signals(self, data: DataBundle, params: dict[str, Any]) -> SignalArray:
         """根据数据和参数输出信号矩阵，shape=(n_bars, n_assets)。"""
 
-    def on_init(self, engine: Any) -> None:
+    def on_init(self, engine: Any) -> None:  # noqa: B027
         """可选钩子：用于策略初始化时调整交易模型。"""
-

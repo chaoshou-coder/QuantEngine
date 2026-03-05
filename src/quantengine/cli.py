@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+import json
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-import json
-from types import MethodType
-import logging
 from pathlib import Path
+from types import MethodType
 from typing import Any
 
 import click
@@ -26,7 +26,11 @@ from quantengine.optimizer import (
     WalkForwardConfig,
 )
 from quantengine.strategy import ParameterSpace, get_strategy, list_strategies
-from quantengine.visualization.reports import write_backtest_report_html, write_optimization_report_html, write_walk_forward_report_html
+from quantengine.visualization.reports import (
+    write_backtest_report_html,
+    write_optimization_report_html,
+    write_walk_forward_report_html,
+)
 
 console = Console()
 
@@ -269,10 +273,7 @@ def walk_forward_cmd(
         show_progress=True,
     )
     result = analyzer.run()
-    console.print(
-        f"[green]walk-forward[/green] folds={len(result.folds)} "
-        f"overfitting={result.overfitting_ratio:.6f}"
-    )
+    console.print(f"[green]walk-forward[/green] folds={len(result.folds)} overfitting={result.overfitting_ratio:.6f}")
     output_path = Path(output) if output else _default_result_path(config, prefix="walk_forward")
     payload = {"type": "walk_forward", **result.as_dict()}
     _write_json(output_path, payload)

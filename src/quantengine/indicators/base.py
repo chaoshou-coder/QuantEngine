@@ -19,4 +19,3 @@ class Indicator(ABC):
     @abstractmethod
     def compute(self, series: Any, **kwargs: Any) -> IndicatorResult:
         """计算指标。"""
-
