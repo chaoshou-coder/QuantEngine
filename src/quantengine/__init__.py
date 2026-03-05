@@ -10,4 +10,4 @@ __all__ = ["__version__", "QuantEngineAPI", "get_logger"]
 try:
     __version__ = version("quantengine")
 except PackageNotFoundError:
-    __version__ = "0.1.0"
+    __version__ = "0.2.0"

@@ -11,20 +11,30 @@ test_data/
 scripts/
 benchmarks/
 
-
 dist/
 build/
-
 .venv/
 venv/
 .env
 
-data/
+# 数据与实验产物（不发布，仅根目录）
+/data/
 results/
 reports/
 memory/
+test_data/
 *.parquet
 *.csv
 *.tmp_*.py
 !tests/**/*.parquet
 !tests/**/*.csv
+
+# 内部文档（不发布）
+docs/RELEASE_READINESS_AUDIT.md
+docs/TESTS_RELEASE_AUDIT.md
+docs/sprint1_coordination.md
+
+# 依赖 test_data 的测试（不发布）
+tests/test_acceptance.py
+tests/test_psar_v3_acceptance.py
+tests/test_psar_v4_acceptance.py

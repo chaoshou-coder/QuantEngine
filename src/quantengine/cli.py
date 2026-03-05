@@ -13,6 +13,7 @@ import numpy as np
 from rich.console import Console
 from rich.table import Table
 
+from quantengine.check_deps import run_check
 from quantengine.config import ConfigError, QuantEngineConfig, load_config
 from quantengine.data.loader import DataLoader
 from quantengine.engine import BacktestEngine
@@ -46,6 +47,50 @@ def main(ctx: click.Context, config_path: str | None) -> None:
     except ConfigError as exc:
         raise click.ClickException(str(exc)) from exc
     ctx.obj = {"config": config}
+
+
+@main.command("check-deps")
+@click.option("--engine", is_flag=True, help="同时检查 GPU/优化器可选依赖")
+@click.option("--json", "output_json", is_flag=True, help="输出 JSON 供 CI 解析")
+def check_deps_cmd(engine: bool, output_json: bool) -> None:
+    """检查 Python 版本与核心/可选依赖。"""
+    result = run_check(include_engine=engine)
+    if output_json:
+        payload = {
+            "python": {
+                "name": result["python"].name,
+                "required": result["python"].required,
+                "installed": result["python"].installed,
+                "status": result["python"].status,
+            },
+            "core": [
+                {"name": r.name, "required": r.required, "installed": r.installed, "status": r.status}
+                for r in result["core"]
+            ],
+            "engine": (
+                [
+                    {"name": r.name, "required": r.required, "installed": r.installed, "status": r.status}
+                    for r in result["engine"]
+                ]
+                if result["engine"]
+                else None
+            ),
+            "all_ok": result["all_ok"],
+        }
+        console.print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return
+    table = Table(title="依赖检查")
+    table.add_column("包名", style="cyan")
+    table.add_column("要求版本", style="dim")
+    table.add_column("已安装版本", justify="right")
+    table.add_column("状态", justify="center")
+    for r in [result["python"]] + result["core"] + (result["engine"] or []):
+        installed = r.installed or "-"
+        style = "green" if r.status == "OK" else "red" if r.status == "缺失" else "yellow"
+        table.add_row(r.name, r.required, installed, f"[{style}]{r.status}[/{style}]")
+    console.print(table)
+    if not result["all_ok"]:
+        raise SystemExit(1)
 
 
 @main.command("list-strategies")

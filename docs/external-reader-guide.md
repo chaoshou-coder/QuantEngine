@@ -1,4 +1,4 @@
-﻿# 外部阅读者精简导航（评审/对接版）
+# 外部阅读者精简导航（评审/对接版）
 
 这份文档帮助不直接开发代码的读者（评审、合作方、外部用户）在短时间内理解 QuantEngine 的能力边界与使用方式。
 
@@ -30,6 +30,11 @@
   - 多策略 + 多参数组合回测
   - 参数优化：`grid/random/bayesian/genetic`
   - Walk-Forward 防过拟合分析（IS/OOS + overfitting_ratio）
+  - 审计包：ZIP 可复现、round-trip 校验、replay 回放
+  - 成本多情景：低/中/高三档滑点与手续费批量评估
+  - 策略 DSL：YAML 格式，framework/risk_mode 正交组合
+  - 合约规格：multiplier、min_tick、trading_sessions 抽象
+  - 风控引擎：7 字段（单笔风险、日内/周亏损、回撤、持仓、加仓）
   - 数据缓存：`.quantengine_cache` 命中加速
   - Numba JIT：关键指标与仿真路径加速
   - 报告输出：`JSON` + `HTML`（plotly/matplotlib）

@@ -1,4 +1,4 @@
-﻿# QuantEngine CLI 命令手册
+# QuantEngine CLI 命令手册
 
 ## 命令总览
 
@@ -14,11 +14,22 @@ quantengine --help
 
 子命令：
 
+- `check-deps` — 依赖检查（安装前可选）
 - `list-strategies`
 - `backtest`
 - `optimize`
 - `walk-forward`
 - `report`
+
+## check-deps
+
+检查核心依赖与可选 engine 依赖的安装状态。
+
+```bash
+quantengine check-deps           # 仅核心依赖
+quantengine check-deps --engine  # 含 GPU/优化器
+quantengine check-deps --json    # JSON 输出，供 CI 解析
+```
 
 ## list-strategies
 
@@ -47,6 +58,7 @@ quantengine [--config PATH] backtest [选项]
 - `--symbols`：symbol 过滤，多值英文逗号分隔。未传则加载所有符号。
 - `--output`：结果 JSON 输出路径。未传时默认为 `results_root/backtest_YYYYMMDD_HHMMSS.json`。
 - `--report`：可选，生成 HTML 报告路径。
+- `--audit-bundle`：可选，输出可复现审计包 ZIP 路径。
 
 执行示例：
 

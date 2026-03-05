@@ -10,7 +10,7 @@
 pytest tests/ -m "not slow" -q
 ```
 
-当前版本期望通过 169 个测试，覆盖以下模块：
+当前版本期望通过 20 个核心测试模块（不含依赖 test_data 的验收用例），覆盖以下模块：
 
 | 模块 | 测试文件 | 覆盖内容 |
 |------|----------|----------|
@@ -20,7 +20,7 @@ pytest tests/ -m "not slow" -q
 | indicators | `test_registry.py`, `test_technical.py` | 指标注册、技术指标 |
 | metrics | `test_performance.py`, `test_stability_extras.py` | 绩效、稳定性 |
 | strategy | `test_dsl.py` | 策略 DSL 解析、V4 字段 |
-| 验收 | `test_psar_v3_acceptance.py`, `test_psar_v4_acceptance.py` | V3/V4 策略端到端 |
+| 验收 | （依赖 test_data 的用例已排除） | — |
 
 若存在 `test_acceptance.py`（`@pytest.mark.slow`），发布前可额外执行：
 
@@ -28,11 +28,7 @@ pytest tests/ -m "not slow" -q
 pytest tests/test_acceptance.py -m slow -v
 ```
 
-CLI 冒烟测试 `test_cli_backtest_smoke` 依赖数据路径与 Polars 兼容性，环境差异可能导致失败，可排除：
-
-```bash
-pytest tests/ -m "not slow" -k "not test_cli_backtest_smoke"
-```
+若需排除特定测试（如环境依赖差异），可使用 `-k "not test_xxx"`。
 
 ### 模块覆盖矩阵
 
@@ -44,7 +40,7 @@ pytest tests/ -m "not slow" -k "not test_cli_backtest_smoke"
 | indicators | 20+ | 技术指标、注册表、版本号 |
 | metrics | 15+ | 绩效、稳定性、批量指标 |
 | strategy | 15+ | DSL 解析、V4 字段、注册 |
-| 验收 | 20+ | V3/V4 端到端、GPU/CPU 一致性 |
+| 验收 | — | 依赖 test_data 的用例不发布 |
 
 ## 2. 核对清单（人工复核）
 

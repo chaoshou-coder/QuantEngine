@@ -5,20 +5,13 @@
 ## 1. 环境准备
 
 1. 安装 Python 3.11+。
-2. 安装基础依赖：
+2. 安装依赖：
 
 ```bash
 cd <project-root>
-pip install -e .
+pip install -e .          # 仅核心
+pip install -e .[engine]  # 含 GPU/可视化/优化器（推荐）
 ```
-
-3. 如果需要 CUDA 相关路径（可选）：
-
-```bash
-pip install -e .[engine]
-```
-
-`pip install -e .[engine]` 会安装 GPU、优化器和可视化相关依赖。
 
 ## 2. 准备配置文件
 
@@ -174,6 +167,7 @@ print(wf_result.overfitting_ratio)
 ## 9. 常见自检
 
 ```bash
+quantengine check-deps           # 依赖完整性检查
 quantengine --config quantengine.yaml list-strategies
 quantengine --help
 quantengine report --help
