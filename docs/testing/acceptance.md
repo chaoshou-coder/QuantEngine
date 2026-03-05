@@ -22,13 +22,7 @@ pytest tests/ -m "not slow" -q
 | strategy | `test_dsl.py` | 策略 DSL 解析、V4 字段 |
 | 验收 | （依赖 test_data 的用例已排除） | — |
 
-若存在 `test_acceptance.py`（`@pytest.mark.slow`），发布前可额外执行：
-
-```bash
-pytest tests/test_acceptance.py -m slow -v
-```
-
-若需排除特定测试（如环境依赖差异），可使用 `-k "not test_xxx"`。
+若需排除特定测试，可使用 `-k "not test_xxx"`。
 
 ### 模块覆盖矩阵
 
